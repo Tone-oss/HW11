@@ -87,14 +87,14 @@ Print_Output:
     
     ; Write output buffer to stdout
     mov eax, 4         ; syscall: write
-    mov ebx, 1         ; file descriptor: stdout
+    mov ebx, 1         
     mov ecx, outputBuf ; buffer to write
-    mov edx, edi       ; number of bytes to write
+    mov edx, edi       
     int 0x80
     
     
     ; Exit program
-    mov eax, 1         ; syscall: exit
-    xor ebx, ebx       ; exit code 0
+    mov eax, 1         
+    xor ebx, ebx       
     int 0x80
 
