@@ -24,39 +24,42 @@ _start:
 
 
 ;; converts to ascii and then adds to output buffer
-while: ;; use a while loop
+while: ;; use a while loop to go through input buffer
 
     
-    CMP ESI, inputlen ;;until i is at the end of input buffer
+    CMP ESI, inputlen ;;until loop is at the end of input buffer
     JGE Print_Output
 
     MOVZX EAX, byte [inputBuf + ESI]
     mov edx, eax
-;;if statement
+
+;;Reads the first four bits of hex digit
     
 High:
     mov ecx, edx         ; Copy input byte
     and ecx, 0xF0        ; Mask high nibble
     shr ecx, 4           ; Shift to low position
-
+;
+;if statement
     cmp cl, 9
-    jle else
+    jle else ;;less than or equal to
     add cl, 0x37         ; ASCII 'A' to 'F'
     mov [outputBuf + edi], cl
     inc edi
     JMP Low
 
-else:
+else: ;converts ascii sigit to 0-9
     add cl, 0x30         ; ASCII '0' to '9'
     mov [outputBuf + edi], cl
     inc edi
 
-
+;Reads the last 4 bits of the hex digits
 Low:
 
     mov ecx, edx         ; Copy
     and ecx, 0x0F        ; Mask low 4 bits
 
+;if statement
     cmp cl, 9
     jle Low_else
     add cl, 0x37         ; ASCII 'A' to 'F'
@@ -64,19 +67,23 @@ Low:
     inc edi
     JMP store
 
+;;if the digit is a number
 Low_else:
     add cl, 0x30         ; ASCII '0' to '9'
     mov [outputBuf + edi], cl
     inc edi
    
-store:
+store:;;adds the bits to the output buffer(edi)
     mov byte [outputBuf + edi], 0x20 ;add space character to buffer
     inc edi
 
 
 
     
-End_While:
+End_While: 
+;end of while loop section that increments the
+;input buffer to move on
+
     INC ESI
     JMP while
 
@@ -85,7 +92,7 @@ Print_Output:
 
     mov byte [outputBuf + edi], 0
     
-    ; Write output buffer to stdout
+    ; Write output buffer to be outputted on screen
     mov eax, 4         ; syscall: write
     mov ebx, 1         
     mov ecx, outputBuf ; buffer to write
